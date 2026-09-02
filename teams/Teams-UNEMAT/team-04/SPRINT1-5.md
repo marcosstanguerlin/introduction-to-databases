@@ -169,15 +169,15 @@ Para cada entidade, identifique os principais atributos que deverão ser armazen
 
 **Nome da entidade:**
 
-```id_Funcionario
+```Funcionário
 
 ```
 
 | Atributo | Informação armazenada | Tipo de dado previsto | Obrigatório? |
-| `UNIQUE` | uuid do funcionário | INT | SIM |
-|  |  |  |  |
-|  |  |  |  |
-|  |  |  |  |
+| Nome | Nome do funcionário | VARCHAR | SIM |
+| Idade | Idade do func | INT | SIM |
+| CPF_func | Cpf do func | INT | SIM |
+| Tempo_empresa | Tempo de empresa do func | INT | SIM |
 |  |  |  |  |
 |  |  |  |  |
 
@@ -185,13 +185,13 @@ Para cada entidade, identifique os principais atributos que deverão ser armazen
 
 **Nome da entidade:**
 
-```text
+```Filial
 
 ```
 
 | Atributo | Informação armazenada | Tipo de dado previsto | Obrigatório? |
-|---|---|---|---|
-|  |  |  |  |
+| QtdFunc | Quantidade de funcionarios na filial | INT | SIM |
+| Nome_gerente | Nome do gerente da filial | VARCHAR | SIM |
 |  |  |  |  |
 |  |  |  |  |
 |  |  |  |  |
