@@ -35,11 +35,11 @@ Nesta Sprint 1/5, o foco é exclusivamente o **planejamento do banco de dados**.
 
 **Nome completo:**
 
-> Preencha aqui.
+> Marcos Aurélio Bastos Stanguerlin.
 
 **Nome escolhido para o banco de dados:**
 
-```text
+```Sorveteria e Açaiteria
 
 ```
 
@@ -73,7 +73,7 @@ Alguns exemplos:
 
 ### Tema escolhido
 
-> Escreva aqui.
+> Sorveteria e Açaiteria.
 
 ---
 
@@ -90,7 +90,7 @@ A descrição deve responder:
 
 ### Descrição
 
-> Escreva aqui.
+> Um sistema de banco de dados que gerencia todos os funcionarios e suas funções dentro de uma sorveteria e açaiteria. Essa empresa possui multiplas filiais e com esse banco de dado buscamos estar organizando todos os dados relacionados aos funcioarios, seus cargos e permissões relacionadas ao cargo, carga horaria. Esse banco será utilizado pelo RH e Administração, em sua maior parte sera mais utilizado para verificação da ponto batido
 
 ---
 
@@ -100,7 +100,7 @@ Explique qual é o principal objetivo do banco de dados proposto.
 
 ### Objetivo
 
-> Escreva aqui.
+> Organizar e estruturar todos os dados dos funcionários da empresa. facilitar acesso esses dados e auxiliar durante o pagamento e fechamento de ponto no final do mês.
 
 ---
 
@@ -150,11 +150,11 @@ Pagamento
 
 | Nº | Entidade | O que representa? |
 |---:|---|---|
-| 1 |  |  |
-| 2 |  |  |
-| 3 |  |  |
-| 4 |  |  |
-| 5 |  |  |
+| 1 | Funcionário | Funcionário no nível individual sem duplicamento |
+| 2 | Cargo | Quais atividade o funcionário pratica na empresa |
+| 3 | Setor | Em qual local o funcionário atua |
+| 4 | Filial | Em qual cidade o funcionário trabalho |
+| 5 | Carga_horária | Quanto tempo por mês o funcionário trabalha |
 | 6 |  |  |
 
 > Como referência para esta atividade, planeje **pelo menos 4 tabelas relacionadas**.
@@ -169,12 +169,12 @@ Para cada entidade, identifique os principais atributos que deverão ser armazen
 
 **Nome da entidade:**
 
-```text
+```id_Funcionario
 
 ```
 
 | Atributo | Informação armazenada | Tipo de dado previsto | Obrigatório? |
-|---|---|---|---|
+| `UNIQUE` | uuid do funcionário | INT | SIM |
 |  |  |  |  |
 |  |  |  |  |
 |  |  |  |  |
