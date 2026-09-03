@@ -277,9 +277,9 @@ Produto aparece em Item_Pedido
 
 | Entidade A | Relacionamento | Entidade B |
 |---|---|---|
-|  |  |  |
-|  |  |  |
-|  |  |  |
+| Funcionário | trabalaha em | Filial |
+| Filial | bate ponto para | Tablea de expediente |
+| Estoque_loja | estoca para | Filial |
 |  |  |  |
 |  |  |  |
 
