@@ -112,11 +112,11 @@ Liste as principais funcionalidades ou informações que deverão ser contemplad
 
 ### O banco deverá permitir:
 
-1. 
-2. 
-3. 
-4. 
-5. 
+1. Puxar horaras trabalhadas do funcionario
+2. Puxar o salario base do funcionario
+3. Puxar qual o setor e filial de qualquer funcionario
+4. Adicionar e atualizar dados dos funcionarios
+5. Adicionar e verificar sobre horas extras dos colaboradores
 
 ---
 
@@ -178,8 +178,8 @@ Para cada entidade, identifique os principais atributos que deverão ser armazen
 | Idade | Idade do func | INT | SIM |
 | CPF_func | Cpf do func | INT | SIM |
 | Tempo_empresa | Tempo de empresa do func | INT | SIM |
-|  |  |  |  |
-|  |  |  |  |
+| Id_func | Id usado internamente do func | INT | SIM |
+| Func_funcionario | Qual a funcao desse func na empresa | VARCHAR | SIM |
 
 ## Entidade 2
 
@@ -192,42 +192,42 @@ Para cada entidade, identifique os principais atributos que deverão ser armazen
 | Atributo | Informação armazenada | Tipo de dado previsto | Obrigatório? |
 | QtdFunc | Quantidade de funcionarios na filial | INT | SIM |
 | Nome_gerente | Nome do gerente da filial | VARCHAR | SIM |
-|  |  |  |  |
-|  |  |  |  |
-|  |  |  |  |
+| Modulo | Qual o proposito da loja? (estoque, loja, adm, etc.) | Chave_estrangeira | SIM |
+| Localizacao | Aonde está localizado a filial | VARCHAR | SIM |
+| Id_Filial | Id de identificação da filial | INT | SIM |
 |  |  |  |  |
 
 ## Entidade 3
 
 **Nome da entidade:**
 
-```text
+```Tablea de expediente
 
 ```
 
 | Atributo | Informação armazenada | Tipo de dado previsto | Obrigatório? |
 |---|---|---|---|
-|  |  |  |  |
-|  |  |  |  |
-|  |  |  |  |
-|  |  |  |  |
-|  |  |  |  |
+| Id_Funcionario | Identificação de cada funcionario | INT | SIM |
+| Func_funcionario | Qual a sua função na empresa | INT | SIM |
+| Expediente_funcao | Expediente base de cada função | INT | SIM |
+| Jornada_trabalho | Qual foi a jornada realizada nesse dia | INT | SIM |
+| Hora_extra | hora extra realizada em data especifica | INT | NÃO |
 
 ## Entidade 4
 
 **Nome da entidade:**
 
-```text
+```Estoque_loja
 
 ```
 
 | Atributo | Informação armazenada | Tipo de dado previsto | Obrigatório? |
 |---|---|---|---|
-|  |  |  |  |
-|  |  |  |  |
-|  |  |  |  |
-|  |  |  |  |
-|  |  |  |  |
+| Funcionario_escalado | Quem foi escalado para operar o estoque (id_func) | INT | SIM |
+| Qtd_item | Quantidade do item | INT | SIM |
+| Nome_item | Nome do item em estoque | INT | SIM |
+| Qtd_necessaria | Quantos deveria ter no estoque | INT | SIM |
+| Id_Item | Identificador interno do item | INT | SIM |
 
 ## Outras entidades
 
@@ -247,10 +247,10 @@ Cada tabela deverá possuir uma forma de identificar unicamente seus registros.
 
 | Entidade/Tabela | Chave primária prevista | Justificativa |
 |---|---|---|
-|  |  |  |
-|  |  |  |
-|  |  |  |
-|  |  |  |
+| Funcionário | Id_func | Identificador do funcionario |
+| Filial | Modulo | Determina o que a filial se especializa |
+| Tablea de expediente | Expediente_funcao | Expediente base da função que tudo se compara |
+| Estoque_loja | Id_Item | Identificador dos items no estoque |
 
 Considere:
 
