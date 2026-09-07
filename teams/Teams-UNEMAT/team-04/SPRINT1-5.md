@@ -39,7 +39,7 @@ Nesta Sprint 1/5, o foco é exclusivamente o **planejamento do banco de dados**.
 
 **Nome escolhido para o banco de dados:**
 
-```Recusos Humanos de uma multifilial (sorveteria)
+```
 
 ```
 
@@ -73,7 +73,7 @@ Alguns exemplos:
 
 ### Tema escolhido
 
-> Sorveteria e Açaiteria.
+> Recusos Humanos de uma multifilial (sorveteria).
 
 ---
 
