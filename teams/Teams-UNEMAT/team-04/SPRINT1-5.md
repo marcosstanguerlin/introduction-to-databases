@@ -39,7 +39,7 @@ Nesta Sprint 1/5, o foco é exclusivamente o **planejamento do banco de dados**.
 
 **Nome escolhido para o banco de dados:**
 
-```Sorveteria e Açaiteria
+```Recusos Humanos de uma multifilial (sorveteria)
 
 ```
 
@@ -154,8 +154,8 @@ Pagamento
 | 2 | Cargo | Quais atividade o funcionário pratica na empresa |
 | 3 | Setor | Em qual local o funcionário atua |
 | 4 | Filial | Em qual cidade o funcionário trabalho |
-| 5 | Carga_horária | Quanto tempo por mês o funcionário trabalha |
-| 6 |  |  |
+| 5 | Estoque | Estoque interno da filial |
+| 6 | Expediente | Horario trabalho pelo funcionario |
 
 > Como referência para esta atividade, planeje **pelo menos 4 tabelas relacionadas**.
 
@@ -176,11 +176,11 @@ Para cada entidade, identifique os principais atributos que deverão ser armazen
 | Atributo | Informação armazenada | Tipo de dado previsto | Obrigatório? |
 |---|---|---|---|
 | Nome | Nome do funcionário | VARCHAR | SIM |
-| Idade | Idade do func | INT | SIM |
-| CPF_func | Cpf do func | INT | SIM |
+| data_nascimento | data de nascimento do func | INT | SIM |
+| CPF_func | Cpf do func | VARCHAR | SIM |
 | Tempo_empresa | Tempo de empresa do func | INT | SIM |
 | Id_func | Id usado internamente do func | INT | SIM |
-| Func_funcionario | Qual a funcao desse func na empresa | VARCHAR | SIM |
+| id_cargo | Qual a funcao desse func na empresa | FK | SIM |
 
 ## Entidade 2
 
@@ -191,9 +191,9 @@ Para cada entidade, identifique os principais atributos que deverão ser armazen
 ```
 
 | Atributo | Informação armazenada | Tipo de dado previsto | Obrigatório? |
-| QtdFunc | Quantidade de funcionarios na filial | INT | SIM |
-| Nome_gerente | Nome do gerente da filial | VARCHAR | SIM |
-| Modulo | Qual o proposito da loja? (estoque, loja, adm, etc.) | VARCHAR | SIM |
+|  |  |  |  |
+| data_abertura | Quando foi aberta a filial | INT | SIM |
+| Modulo | Qual o proposito da filial? (estoque, loja, adm, etc.) | VARCHAR | SIM |
 | Localizacao | Aonde está localizado a filial | VARCHAR | SIM |
 | Id_Filial | Id de identificação da filial | INT | SIM |
 |  |  |  |  |
@@ -202,13 +202,13 @@ Para cada entidade, identifique os principais atributos que deverão ser armazen
 
 **Nome da entidade:**
 
-```Tablea de expediente
+```Expediente
 
 ```
 
 | Atributo | Informação armazenada | Tipo de dado previsto | Obrigatório? |
 |---|---|---|---|
-| Id_Funcionario | Identificação de cada funcionario | Chave_estrangeira | SIM |
+| id_expediente | Identificação da jornada de trabalho | PK | SIM |
 | Func_funcionario | Qual a sua função na empresa | Chave_estrangeira | SIM |
 | Jornada_trabalho | Qual foi a jornada realizada nesse dia | INT | SIM |
 | Hora_extra | hora extra realizada em data especifica | INT | NÃO |
@@ -218,17 +218,16 @@ Para cada entidade, identifique os principais atributos que deverão ser armazen
 
 **Nome da entidade:**
 
-```Estoque_loja
+```Estoque
 
 ```
 
 | Atributo | Informação armazenada | Tipo de dado previsto | Obrigatório? |
 |---|---|---|---|
-|  |  |  |  |
-| Qtd_item | Quantidade do item | INT | SIM |
-| Nome_item | Nome do item em estoque | INT | SIM |
-| Qtd_necessaria | Quantos deveria ter no estoque | INT | SIM |
-| Id_Item | Identificador interno do item | INT | SIM |
+| id_estoque | Id do estoque |  |  |
+| id_filial | Id da filial que está guardando o item | FK | SIM |
+| id_produto | Id do produto | FK | SIM |
+| Qtd_item | Quantidade do produto no estoque | INT | SIM |
 
 ## Outras entidades
 
@@ -249,9 +248,9 @@ Cada tabela deverá possuir uma forma de identificar unicamente seus registros.
 | Entidade/Tabela | Chave primária prevista | Justificativa |
 |---|---|---|
 | Funcionário | Id_func | Identificador do funcionario |
-| Filial | Modulo | Determina o que a filial se especializa |
-| Tablea de expediente | Jornada_trabalho | Qual foi a jornada realizada nesse dia |
-| Estoque_loja | Id_Item | Identificador dos items no estoque |
+| Filial | id_filial | Identificador da filial |
+| Expediente | id_expediente | Identificador da jornada de trabalho |
+| Estoque | Id_estoque | Identificador do estoque em especifico |
 
 Considere:
 
@@ -280,8 +279,8 @@ Produto aparece em Item_Pedido
 |---|---|---|
 | Funcionário | trabalaha em | Filial |
 | Funcionário | exerce | Tablea de expediente |
-| Filial | possui | estoque loja |
-|  |  |  |
+| Filial | possui | estoque |
+| Estoque | possui | Produtos |
 |  |  |  |
 
 ---
@@ -299,9 +298,9 @@ N:N  → muitos para muitos
 | Relacionamento | Cardinalidade prevista | Justificativa |
 |---|---|---|
 | Funcionario - Filial | N:1 | Multiplos funcionarios trabalham em cada filial |
-| Funcionario - Tabela Expediente | 1:1 | Cada funcionario possuie um expediente a comprir |
-| Filial - Estoque Loja | 0:1 | Se for loja, ela deve possuir um estoque |
-|  |  |  |
+| Funcionario - Expediente | 1:N | Cada funcionario possuie um expediente a comprir |
+| Filial - Estoque | 1:1 | Todas as filials precisam de um estoque de materiais |
+| Produto - Estoque | N:N | Um produto pode existir em multiplos estoques diferentes |
 
 ---
 
@@ -309,9 +308,9 @@ N:N  → muitos para muitos
 
 | Tabela | Atributo previsto como FK | Referencia qual tabela? |
 |---|---|---|
-| Expediente | Id_func, nome_func, funcao_func | Funcionario |
-| Filiais | Id_func, nome_func, funcao_func | Funcionario |
-| Estoque | Id_func, nome_func - Id_filial | Funcionario e Filiais |
+| Funcionario | id_filial id_cargo id_setor | Filial, Cargo e Setor |
+| Expediente | Id_func | Funcionario |
+| Estoque | id_filial id_produto | Filial e Filiais |
 |  |  |  |
 
 > As `FOREIGN KEY` serão implementadas posteriormente. Nesta Sprint, apenas planeje os relacionamentos.
@@ -333,7 +332,7 @@ AUTO_INCREMENT
 
 | Tabela | Atributo | Restrição prevista | Motivo |
 |---|---|---|---|
-| id_fun - id_loja - id_item | Primary Key AUTO_INCREMENT UNIQUE | NOT NULL | Ids propostos como PK, sempre incrementão e não são nulos |
+| id_fun - id_estoque - id_item - id_expediente | Primary Key AUTO_INCREMENT UNIQUE | NOT NULL | Ids propostos como PK, sempre incrementão e não são nulos |
 | Jornada_trabalho | AUTO_INCREMENT DEFAULT (0) |  | Caso não seja adicionado valor, ele não trabalhou, volta para default 0 |
 | Func_funcionario |  | NOT NULL | Sempre deve haver um valor dentro dessa chave |
 |  |  |  |  |
@@ -360,7 +359,7 @@ Um empréstimo deve possuir uma data de realização.
 1. Hora extra deve sempre ser adicionada com justificativa
 2. Funcionario não deve existir sem todos os dados preenchidos
 3. Filiais não devem existir sem um modulo
-4. Nenhum ID deve ser duplicado, apenas ids de classes diferentes
+4. Nenhum ID deve ser duplicado
 5. Hora extra deve ser apenas preenchida caso o horario trabalhado seja maior que o expediente da função
 
 ---
@@ -388,17 +387,47 @@ CLIENTE 1 ───── N PEDIDO
 ### Esboço do seu banco
 
 ```text
-Funcionario
+FUNCIONARIO
 ├── id_func (PK)
 ├── nome
-├── idade
-└── Tempo_empresa
+├── cpf
+├── data_nascimento
+├── data_admissao
+├── id_cargo (FK)
+├── id_setor (FK)
+└── id_filial (FK)
 
 Filial
 ├── id_filial (PK)
 ├── Moludo
 ├── Localizaação
 └── QTD_Funcionario
+
+CARGO
+├── id_cargo (PK)
+├── nome_cargo
+├── salario_base
+└── carga_horaria
+
+EXPEDIENTE
+├── id_expediente (PK)
+├── id_funcionario (FK)
+├── data
+├── hora_entrada
+├── hora_saida
+├── hora_extra
+└── justificativa_hora_extra
+
+PRODUTO
+├── id_produto
+├── nome
+└── unidade_medida
+
+ESTOQUE
+├── id_estoque
+├── id_filial
+├── id_produto
+└── quantidade
 ```
 
 ---
@@ -410,7 +439,7 @@ Descreva que tipos de registros deverão existir no banco quando ele for populad
 1. Dados pessoais dos funcionarios
 2. Dados base referente a profissão exercida pelos funcionarios
 3. Dados relacionados aos locais de trabalho
-4. Dados referente aos items dentro das lojas
+4. Dados referente aos items dentro das filiais
 
 ---
 
