@@ -174,6 +174,7 @@ Para cada entidade, identifique os principais atributos que deverão ser armazen
 ```
 
 | Atributo | Informação armazenada | Tipo de dado previsto | Obrigatório? |
+|---|---|---|---|
 | Nome | Nome do funcionário | VARCHAR | SIM |
 | Idade | Idade do func | INT | SIM |
 | CPF_func | Cpf do func | INT | SIM |
