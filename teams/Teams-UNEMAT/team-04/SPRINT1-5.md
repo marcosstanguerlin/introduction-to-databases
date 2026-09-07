@@ -191,7 +191,7 @@ Para cada entidade, identifique os principais atributos que deverão ser armazen
 ```
 
 | Atributo | Informação armazenada | Tipo de dado previsto | Obrigatório? |
-|  |  |  |  |
+|---|---|---|---|
 | data_abertura | Quando foi aberta a filial | INT | SIM |
 | Modulo | Qual o proposito da filial? (estoque, loja, adm, etc.) | VARCHAR | SIM |
 | Localizacao | Aonde está localizado a filial | VARCHAR | SIM |
