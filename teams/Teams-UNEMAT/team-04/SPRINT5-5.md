@@ -66,7 +66,7 @@ A estrutura esperada é:
 18. comandos de validação
 ```
 
-> O objetivo é que o professor consiga abrir somente o `SPRINT5-5.sql`, executar o projeto e compreender a solução final.
+> Verificação realizada, todos estão de acordo
 
 ---
 
@@ -99,36 +99,34 @@ Verifique se o banco final ainda corresponde ao projeto proposto.
 
 ## Tema do banco
 
-```text
-
+```
+Rh de uma sorveteria
 ```
 
 ## Objetivo principal
 
-> Escreva aqui.
+> Realização de buscas relacionadas ao Rh e estoque de uma sorveteria.
 
 ## Quantidade final de tabelas
 
-```text
-
+```
+7 Tabelas
 ```
 
 ## Principais entidades do banco
 
-1. 
-2. 
-3. 
-4. 
-5. 
+1. Funcionarios
+2. Expediente
+3. Estoque
 
 ## O projeto final permaneceu igual ao planejamento inicial?
 
 - [ ] Sim
-- [ ] Não
+- [X] Não
 
 Caso tenha mudado, explique:
 
-> Escreva aqui.
+> Enquanto a idea continuou a mesma, alguns planilhas tiveram que ser reimaginadas (como expediente e cargo) para ficar mais coerente e facil de se trabalhar com
 
 ---
 
@@ -138,10 +136,8 @@ Registre alterações relevantes feitas desde a Sprint 1/5.
 
 | Alteração | Sprint em que ocorreu | Justificativa |
 |---|---|---|
-|  |  |  |
-|  |  |  |
-|  |  |  |
-|  |  |  |
+| Adicionado hora de entrada e saida | 2 | Realizado anteriormente eram apenas hora de entrada e hora extra, foi alterado para possibilitar hora de almoço e simplesmente registrar hora de saida |
+| Cargo ganhou expediente base | 2 | Anteriormente parte do expediente, porém ficava mais facil deixar no cargo. Também tinha testado no Funcionario porém ficava com muitas repetições |
 
 Caso não tenha ocorrido alteração:
 
@@ -164,11 +160,11 @@ Preencha:
 
 | Tabela | PK correta? | FKs corretas? | Tipos corretos? | Restrições corretas? |
 |---|---|---|---|---|
-|  |  |  |  |  |
-|  |  |  |  |  |
-|  |  |  |  |  |
-|  |  |  |  |  |
-|  |  |  |  |  |
+| FILIAL  | SIM | SIM | SIM | SIM |
+| CARGO  | SIM | SIM | SIM | SIM |
+| PRODUTO  | SIM | SIM | SIM | SIM |
+| SETOR  | SIM | SIM | SIM | SIM |
+| FUNCIONARIO  | SIM | SIM | SIM | SIM |
 
 ---
 
@@ -178,14 +174,16 @@ Liste as chaves primárias finais.
 
 | Tabela | PRIMARY KEY | AUTO_INCREMENT? |
 |---|---|---|
-|  |  |  |
-|  |  |  |
-|  |  |  |
-|  |  |  |
+| FILIAL  | id_filial |
+| CARGO  | id_cargo |
+| PRODUTO  | id_produto |
+| SETOR  | id_setor |
+| FUNCIONARIO  | id_func |
+| ESTOQUE| id_filial, id_produto|
 
 Verifique se cada registro pode ser identificado de forma única.
 
----
+--- sim
 
 # 7. Revisão das FOREIGN KEY
 
@@ -260,12 +258,12 @@ Pergunte:
 
 Confirme:
 
-- [ ] os INSERTs executam sem erro;
-- [ ] respeitam as chaves estrangeiras;
-- [ ] não existem duplicações indevidas;
-- [ ] respeitam `NOT NULL`;
-- [ ] respeitam `UNIQUE`;
-- [ ] os dados fazem sentido no domínio.
+- [X] os INSERTs executam sem erro;
+- [X] respeitam as chaves estrangeiras;
+- [X] não existem duplicações indevidas;
+- [X] respeitam `NOT NULL`;
+- [X] respeitam `UNIQUE`;
+- [X] os dados fazem sentido no domínio.
 
 Caso encontre problemas, registre:
 
@@ -280,15 +278,15 @@ Caso encontre problemas, registre:
 
 Confirme:
 
-- [ ] os UPDATEs possuem `WHERE`;
-- [ ] alteram os registros esperados;
-- [ ] não modificam toda a tabela acidentalmente;
-- [ ] mantêm a integridade do banco.
+- [X] os UPDATEs possuem `WHERE`;
+- [X] alteram os registros esperados;
+- [X] não modificam toda a tabela acidentalmente;
+- [X] mantêm a integridade do banco.
 
 Liste os principais UPDATEs finais:
 
 ```sql
--- Cole aqui os UPDATEs mais importantes.
+--
 
 ```
 
@@ -298,10 +296,10 @@ Liste os principais UPDATEs finais:
 
 Confirme:
 
-- [ ] os DELETEs possuem `WHERE`;
-- [ ] não removem registros necessários ao funcionamento do projeto;
-- [ ] respeitam as dependências de `FOREIGN KEY`;
-- [ ] não comprometem consultas posteriores.
+- [X] os DELETEs possuem `WHERE`;
+- [X] não removem registros necessários ao funcionamento do projeto;
+- [X] respeitam as dependências de `FOREIGN KEY`;
+- [X] não comprometem consultas posteriores.
 
 Liste os DELETEs finais:
 
