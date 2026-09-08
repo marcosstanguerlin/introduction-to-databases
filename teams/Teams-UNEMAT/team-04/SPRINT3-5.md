@@ -212,7 +212,7 @@ VALUES
 
 ### Observação de execução
 
-> A tabela `EXPEDIENTE` possui uma chave estrangeira para `FUNCIONARIO`. Por isso, os funcionários precisam ser inseridos antes dos registros de expediente. No script corrigido desta Sprint, a ordem foi ajustada para respeitar essa dependência.
+> A tabela `EXPEDIENTE` possui uma chave estrangeira para `FUNCIONARIO`. Por isso, os funcionários precisam ser inseridos antes dos registros de expediente
 
 ---
 
@@ -511,8 +511,6 @@ SELECT * FROM ESTOQUE;
 # 20. Ordem correta de execução dos INSERTs
 
 Como existem chaves estrangeiras, a ordem de inserção precisa respeitar os relacionamentos.
-
-A ordem utilizada no script corrigido é:
 
 1. `FILIAL`
 2. `CARGO`
