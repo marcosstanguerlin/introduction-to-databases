@@ -878,10 +878,10 @@ Não exclua arquivos anteriores.
 - [x] utilizei aliases com `AS`;
 - [x] utilizei expressão SQL quando aplicável;
 - [x] minhas consultas respondem perguntas reais;
-- [ ] testei as consultas no MySQL Workbench — precisa ser confirmado após execução local;
+- [X] testei as consultas no MySQL Workbench
 - [x] salvei o código em `SPRINT4-5.sql`;
 - [x] preenchi completamente o `SPRINT4-5.md`;
-- [ ] revisei os arquivos antes do commit.
+- [X] revisei os arquivos antes do commit.
 
 ---
 
