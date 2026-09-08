@@ -1,785 +1,629 @@
-# SPRINT 3/5 — Manipulação de Dados com DML
+# SPRINT 3/5 — Inserção e Manipulação de Dados com DML
 
 **Disciplina:** Laboratório de Banco de Dados  
 **Modalidade:** Atividade individual  
+**Aluno:** Marcos Aurélio Bastos Stanguerlin  
 **Entrega desta Sprint:** `SPRINT3-5.md` + `SPRINT3-5.sql`
 
 ---
 
 # Objetivo da Sprint 3/5
 
-Nesta etapa, cada aluno deverá utilizar o banco de dados criado na `SPRINT2-5.sql` para **inserir, alterar e excluir dados** utilizando comandos DML (*Data Manipulation Language*).
+Nesta etapa, o banco criado e estruturado nas Sprints anteriores passa a receber dados e operações de manipulação.
 
-Nesta Sprint serão trabalhados principalmente:
+O objetivo desta Sprint é utilizar comandos DML (*Data Manipulation Language*) para:
 
-```sql
-INSERT
-UPDATE
-DELETE
-```
+- inserir registros com `INSERT`;
+- alterar registros com `UPDATE`;
+- excluir registros com `DELETE`;
+- validar as restrições criadas anteriormente;
+- testar `NOT NULL`, `UNIQUE` e `FOREIGN KEY`;
+- consultar os dados após as operações;
+- registrar os problemas encontrados durante a execução.
 
-Ao final da atividade, o banco deverá possuir dados coerentes com o domínio escolhido na Sprint 1/5.
-
-O aluno deverá entregar:
+O banco utilizado continua sendo o sistema da **Sorveteria e Açaiteria**, denominado:
 
 ```text
-SPRINT3-5.md
-SPRINT3-5.sql
-```
-
-O arquivo `SPRINT3-5.md` documentará o trabalho realizado. O arquivo `SPRINT3-5.sql` deverá conter os comandos SQL produzidos e testados no MySQL Workbench.
-
-> Utilize obrigatoriamente o banco e as tabelas criados na Sprint 2/5.
-
----
-
-# 1. Antes de começar
-
-1. Abra o MySQL Workbench.
-2. Abra sua conexão.
-3. Confirme que o banco criado na Sprint 2/5 existe.
-4. Abra ou execute o `SPRINT2-5.sql`, se necessário.
-5. Selecione o banco:
-
-```sql
-USE nome_do_banco;
-```
-
-6. Confira as tabelas:
-
-```sql
-DESCRIBE nome_da_tabela;
+Rh_sorveteria
 ```
 
 ---
 
-# 2. Crie o arquivo SPRINT3-5.sql
+# 1. Continuidade das Sprints anteriores
 
-No MySQL Workbench:
+A Sprint 3/5 utiliza a estrutura criada na Sprint 2/5.
 
-```text
-File → New Query Tab
-```
+As tabelas utilizadas são:
 
-Depois:
+1. `FILIAL`
+2. `CARGO`
+3. `PRODUTO`
+4. `SETOR`
+5. `FUNCIONARIO`
+6. `EXPEDIENTE`
+7. `ESTOQUE`
 
-```text
-File → Save Script As...
-```
-
-Salve exatamente como:
-
-```text
-SPRINT3-5.sql
-```
-
-Esse arquivo deverá conter os comandos DML desta Sprint.
+Nesta etapa não foi necessário criar novas tabelas. O objetivo foi popular e manipular os registros das tabelas já existentes.
 
 ---
 
-# 3. INSERT — inserindo dados
+# 2. Dados inseridos no banco
 
-Estrutura básica:
+Foram inseridos dados suficientes para representar o funcionamento básico da sorveteria e açaiteria.
 
-```sql
-INSERT INTO nome_tabela (
-    campo_1,
-    campo_2,
-    campo_3
-)
-VALUES (
-    valor_1,
-    valor_2,
-    valor_3
-);
-```
+Foram cadastrados:
 
-Exemplo:
+- 5 filiais;
+- 5 cargos;
+- 5 produtos;
+- 5 setores;
+- 5 funcionários;
+- 5 registros de expediente;
+- 5 registros de estoque.
 
-```sql
-INSERT INTO cliente (
-    nome,
-    email,
-    data_nascimento
-)
-VALUES (
-    'Ana Souza',
-    'ana@email.com',
-    '2000-05-10'
-);
-```
+Os registros foram distribuídos entre as tabelas para permitir posteriormente a realização de consultas envolvendo funcionários, filiais, cargos, estoque e expediente.
 
 ---
 
-# 4. Inserindo vários registros
+# 3. INSERT — FILIAL
+
+Foram cadastradas cinco filiais.
 
 ```sql
-INSERT INTO cliente (
-    nome,
-    email
+INSERT INTO FILIAL (
+    Modulo,
+    Localizacao,
+    data_abertura
 )
 VALUES
-    ('Ana Souza', 'ana@email.com'),
-    ('Carlos Lima', 'carlos@email.com'),
-    ('Mariana Silva', 'mariana@email.com');
+    ('VAREJO', 'Centro - Rondonópolis', '2022-03-15'),
+    ('VAREJO', 'Vila Operária - Rondonópolis', '2023-07-20'),
+    ('ADMINISTRAÇÃO', 'Centro - Rondonópolis', '2021-01-10'),
+    ('VAREJO', 'Jardim Atlântico - Rondonópolis', '2024-05-12'),
+    ('ADMINISTRAÇÃO', 'Jardim Europa - Rondonópolis', '2025-02-18');
 ```
+
+### Explicação
+
+> Foram cadastradas filiais dos módulos de varejo e administração, todas localizadas em Rondonópolis. Também foi armazenada a data de abertura de cada unidade.
 
 ---
 
-# 5. Quantidade mínima de dados
+# 4. INSERT — CARGO
 
-Procure inserir:
+Foram cadastrados cinco cargos.
 
-```text
-pelo menos 5 registros em cada tabela principal
+```sql
+INSERT INTO CARGO (
+    nome_cargo,
+    salario_base,
+    carga_horaria
+)
+VALUES
+    ('Gerente', 4500.00, 44),
+    ('Atendente', 2200.00, 44),
+    ('Caixa', 2100.00, 44),
+    ('Auxiliar de Estoque', 2000.00, 44),
+    ('Supervisor', 3200.00, 44);
 ```
 
-Exemplo:
+### Explicação
 
-```text
-CLIENTE        → pelo menos 5 registros
-PRODUTO        → pelo menos 5 registros
-PEDIDO         → pelo menos 5 registros
-ITEM_PEDIDO    → registros suficientes para representar os relacionamentos
-```
-
-Os dados precisam ser coerentes e úteis para as consultas da Sprint 4/5.
+> Os cargos representam as principais funções utilizadas no exemplo do sistema. Cada cargo possui um salário base e uma carga horária semanal de 44 horas.
 
 ---
 
-# 6. Ordem correta dos INSERTs
+# 5. INSERT — PRODUTO
 
-Quando existem `FOREIGN KEY`, insira primeiro os registros das tabelas independentes.
+Foram cadastrados cinco produtos.
 
-Exemplo:
-
-```text
-CLIENTE
-   ↓
-PEDIDO
-   ↓
-ITEM_PEDIDO
+```sql
+INSERT INTO PRODUTO (
+    nome_produto
+)
+VALUES
+    ('Açaí 500ml'),
+    ('Sorvete de Chocolate'),
+    ('Sorvete de Morango'),
+    ('Açaí 700ml'),
+    ('Sorvete de Baunilha');
 ```
 
-Ordem recomendada:
+### Explicação
 
-```text
-1. tabelas independentes;
-2. tabelas com FOREIGN KEY;
-3. tabelas associativas.
-```
+> Os produtos foram cadastrados para permitir o controle de estoque das filiais.
 
 ---
 
-# 7. Planejamento dos dados
+# 6. INSERT — SETOR
 
-| Tabela | Quantidade prevista | Depende de outra tabela? |
+Foram cadastrados cinco setores.
+
+```sql
+INSERT INTO SETOR (
+    nome_setor
+)
+VALUES
+    ('Atendimento'),
+    ('Caixa'),
+    ('Estoque'),
+    ('Produção'),
+    ('Administração');
+```
+
+### Explicação
+
+> Os setores representam as áreas onde os funcionários podem atuar dentro da empresa.
+
+---
+
+# 7. INSERT — FUNCIONARIO
+
+Foram cadastrados cinco funcionários.
+
+```sql
+INSERT INTO FUNCIONARIO (
+    nome_func,
+    cpf_func,
+    data_nascimento,
+    data_admissao,
+    id_cargo,
+    id_setor,
+    id_filial
+)
+VALUES
+    ('Carlos Henrique', '12345678901', '1988-04-12', '2022-03-20', 1, 5, 3),
+    ('Ana Paula', '23456789012', '1995-08-25', '2023-07-25', 2, 1, 1),
+    ('Lucas Mendes', '34567890123', '1999-02-10', '2024-01-15', 3, 2, 2),
+    ('Mariana Souza', '45678901234', '1992-11-30', '2024-06-01', 4, 3, 4),
+    ('Rafael Oliveira', '56789012345', '1985-06-18', '2025-02-25', 5, 4, 5);
+```
+
+### Explicação
+
+> Cada funcionário possui CPF, data de nascimento, data de admissão e relacionamentos com cargo, setor e filial. Os campos `id_cargo`, `id_setor` e `id_filial` utilizam registros já existentes nas tabelas relacionadas.
+
+---
+
+# 8. INSERT — EXPEDIENTE
+
+Foram cadastrados cinco registros de expediente.
+
+```sql
+INSERT INTO EXPEDIENTE (
+    data_batimento,
+    hora_entrada,
+    hora_saida,
+    hora_extra,
+    justificativas,
+    id_func
+)
+VALUES
+    ('2026-09-01', '08:00:00', '17:00:00', 0, NULL, 1),
+    ('2026-09-02', '08:00:00', '18:00:00', 1, 'Aumento de demanda na filial', 2),
+    ('2026-09-03', '09:00:00', '18:00:00', 0, NULL, 3),
+    ('2026-09-04', '08:00:00', '19:00:00', 2, 'Organização do estoque', 4),
+    ('2026-09-05', '07:00:00', '17:00:00', 1, 'Atendimento de demanda extra', 5);
+```
+
+### Explicação
+
+> Os registros representam batimentos de ponto dos funcionários. Foram incluídos horários de entrada e saída, quantidade de horas extras e justificativas quando existiram horas adicionais.
+
+### Observação de execução
+
+> A tabela `EXPEDIENTE` possui uma chave estrangeira para `FUNCIONARIO`. Por isso, os funcionários precisam ser inseridos antes dos registros de expediente. No script corrigido desta Sprint, a ordem foi ajustada para respeitar essa dependência.
+
+---
+
+# 9. INSERT — ESTOQUE
+
+Foram cadastrados cinco registros de estoque.
+
+```sql
+INSERT INTO ESTOQUE (
+    quantidade,
+    id_filial,
+    id_produto
+)
+VALUES
+    (35, 1, 1),
+    (20, 2, 2),
+    (50, 3, 3),
+    (15, 4, 4),
+    (40, 5, 5);
+```
+
+### Explicação
+
+> Cada registro informa a quantidade de determinado produto existente em uma filial. A tabela `ESTOQUE` relaciona `FILIAL` e `PRODUTO`.
+
+---
+
+# 10. Resumo dos INSERTs realizados
+
+| Tabela | Quantidade de registros inseridos | Finalidade |
 |---|---:|---|
-|  |  |  |
-|  |  |  |
-|  |  |  |
-|  |  |  |
-|  |  |  |
+| FILIAL | 5 | Cadastrar as unidades da empresa |
+| CARGO | 5 | Cadastrar os cargos |
+| PRODUTO | 5 | Cadastrar os produtos |
+| SETOR | 5 | Cadastrar os setores |
+| FUNCIONARIO | 5 | Cadastrar os funcionários |
+| EXPEDIENTE | 5 | Registrar os batimentos de ponto |
+| ESTOQUE | 5 | Registrar produtos e quantidades por filial |
 
 ---
 
-# 8. INSERTs realizados
+# 11. UPDATE — alteração do nome de funcionário
 
-## Tabela 1
+Foi realizada uma alteração no nome do funcionário de `id_func = 2`.
 
-**Nome:**
+```sql
+UPDATE FUNCIONARIO
+SET nome_func = 'Anna Paula'
+WHERE id_func = 2;
+```
+
+### Antes
 
 ```text
-
+Ana Paula
 ```
 
-```sql
--- Cole aqui os INSERTs realizados.
-
-```
-
-## Tabela 2
-
-**Nome:**
+### Depois
 
 ```text
-
+Anna Paula
 ```
+
+### Explicação
+
+> O comando demonstra a alteração de um dado já cadastrado utilizando `UPDATE` com uma condição no `WHERE`.
+
+---
+
+# 12. UPDATE — alteração do salário
+
+Foi alterado o salário base do cargo de gerente.
 
 ```sql
--- Cole aqui os INSERTs realizados.
-
+UPDATE CARGO
+SET salario_base = 4700.00
+WHERE id_cargo = 1;
 ```
 
-## Tabela 3
-
-**Nome:**
+### Antes
 
 ```text
-
+R$ 4.500,00
 ```
 
-```sql
--- Cole aqui os INSERTs realizados.
-
-```
-
-## Tabela 4
-
-**Nome:**
+### Depois
 
 ```text
-
+R$ 4.700,00
 ```
 
-```sql
--- Cole aqui os INSERTs realizados.
+### Explicação
 
-```
+> O salário base do cargo de gerente foi atualizado de R$ 4.500,00 para R$ 4.700,00.
 
 ---
 
-# 9. AUTO_INCREMENT
+# 13. UPDATE — alteração do estoque
 
-Se a chave primária utiliza `AUTO_INCREMENT`, normalmente você não informa o identificador no `INSERT`.
-
-Exemplo:
+O registro de estoque da filial 2 para o produto 2 foi alterado.
 
 ```sql
-CREATE TABLE cliente (
-    id_cliente INT PRIMARY KEY AUTO_INCREMENT,
-    nome VARCHAR(100) NOT NULL
-);
+UPDATE ESTOQUE
+SET quantidade = 30
+WHERE id_filial = 2
+  AND id_produto = 2;
 ```
 
-Inserção:
-
-```sql
-INSERT INTO cliente (nome)
-VALUES ('Maria');
-```
-
----
-
-# 10. Tipos de valores
-
-Texto:
-
-```sql
-'João da Silva'
-```
-
-Inteiro:
-
-```sql
-10
-```
-
-Decimal:
-
-```sql
-199.90
-```
-
-Data:
-
-```sql
-'2026-09-02'
-```
-
-Booleano:
-
-```sql
-TRUE
-```
-
-ou:
-
-```sql
-FALSE
-```
-
-Ausência de valor:
-
-```sql
-NULL
-```
-
----
-
-# 11. Testando restrições de integridade
-
-Agora que existem dados, teste restrições criadas na Sprint 2/5.
-
-Exemplo:
-
-```sql
-email VARCHAR(150) UNIQUE
-```
-
-Pergunte:
-
-- o banco impede valores duplicados?
-- `NOT NULL` está funcionando?
-- a `FOREIGN KEY` impede referências inexistentes?
-
-Registre os resultados:
-
-| Restrição testada | O que foi testado? | Resultado |
-|---|---|---|
-|  |  |  |
-|  |  |  |
-|  |  |  |
-
-> Não mantenha comandos propositalmente inválidos no `SPRINT3-5.sql` final.
-
----
-
-# 12. UPDATE — alterando registros
-
-Estrutura:
-
-```sql
-UPDATE nome_tabela
-SET campo = novo_valor
-WHERE condicao;
-```
-
-Exemplo:
-
-```sql
-UPDATE cliente
-SET email = 'novo@email.com'
-WHERE id_cliente = 1;
-```
-
----
-
-# 13. Atenção ao WHERE no UPDATE
-
-Este comando:
-
-```sql
-UPDATE cliente
-SET ativo = FALSE;
-```
-
-pode alterar **todos os registros**.
-
-Já:
-
-```sql
-UPDATE cliente
-SET ativo = FALSE
-WHERE id_cliente = 3;
-```
-
-altera somente o registro escolhido.
-
-> Confira sempre o `WHERE` antes da execução.
-
----
-
-# 14. UPDATEs obrigatórios
-
-Execute pelo menos:
+### Antes
 
 ```text
-3 operações UPDATE
+20 unidades
 ```
 
-## UPDATE 1
-
-```sql
--- Cole aqui.
-
-```
-
-**O que foi alterado?**
-
-> Escreva aqui.
-
-## UPDATE 2
-
-```sql
--- Cole aqui.
-
-```
-
-**O que foi alterado?**
-
-> Escreva aqui.
-
-## UPDATE 3
-
-```sql
--- Cole aqui.
-
-```
-
-**O que foi alterado?**
-
-> Escreva aqui.
-
----
-
-# 15. DELETE — removendo registros
-
-Estrutura:
-
-```sql
-DELETE FROM nome_tabela
-WHERE condicao;
-```
-
-Exemplo:
-
-```sql
-DELETE FROM cliente
-WHERE id_cliente = 5;
-```
-
----
-
-# 16. Atenção ao WHERE no DELETE
-
-Este comando:
-
-```sql
-DELETE FROM cliente;
-```
-
-remove todos os registros.
-
-Este:
-
-```sql
-DELETE FROM cliente
-WHERE id_cliente = 5;
-```
-
-remove apenas o registro selecionado.
-
-> Nunca execute `DELETE` sem conferir a condição.
-
----
-
-# 17. DELETE e FOREIGN KEY
-
-Uma exclusão pode ser impedida pela integridade referencial.
-
-Exemplo:
+### Depois
 
 ```text
-CLIENTE
-   ↓
-PEDIDO
+30 unidades
 ```
 
-Se um pedido depende de um cliente, o MySQL pode impedir:
+### Explicação
+
+> Na estrutura criada na Sprint 2, a tabela `ESTOQUE` utiliza chave primária composta por `id_filial` e `id_produto`. Portanto, o registro deve ser localizado por esses dois campos.
+
+### Ajuste em relação ao código inicial
+
+O código inicial utilizava:
 
 ```sql
-DELETE FROM cliente
-WHERE id_cliente = 1;
+WHERE id_estoque = 2;
 ```
 
-Isso pode indicar que a `FOREIGN KEY` está funcionando corretamente.
+Porém, o campo `id_estoque` não existe na estrutura da Sprint 2. A condição foi corrigida para:
+
+```sql
+WHERE id_filial = 2
+  AND id_produto = 2;
+```
 
 ---
 
-# 18. DELETEs obrigatórios
+# 14. DELETE
 
-Execute pelo menos:
+A exclusão de um funcionário que possui registros em `EXPEDIENTE` é impedida pela chave estrangeira enquanto esses registros relacionados existirem.
 
-```text
-2 operações DELETE
-```
-
-## DELETE 1
+Para executar uma exclusão válida e preservar a integridade referencial, primeiro é excluído o expediente relacionado e depois o funcionário.
 
 ```sql
--- Cole aqui.
+DELETE FROM EXPEDIENTE
+WHERE id_func = 1;
 
+DELETE FROM FUNCIONARIO
+WHERE id_func = 1;
 ```
 
-**Registro removido:**
+### Explicação
 
-> Escreva aqui.
+> O funcionário de `id_func = 1` possui um registro relacionado na tabela `EXPEDIENTE`. Como a estrutura não definiu exclusão automática em cascata, o registro dependente deve ser removido antes do funcionário.
 
-## DELETE 2
+### Importância do `WHERE`
 
-```sql
--- Cole aqui.
-
-```
-
-**Registro removido:**
-
-> Escreva aqui.
+> O uso do `WHERE` é necessário para limitar a exclusão ao registro desejado. Um `DELETE` sem condição poderia excluir todos os registros da tabela.
 
 ---
 
-# 19. Conferindo os registros
+# 15. Teste da restrição UNIQUE
 
-Nesta Sprint, você pode utilizar `SELECT` apenas para verificar o estado das tabelas.
+A tabela `FUNCIONARIO` possui a restrição `UNIQUE` no campo `cpf_func`.
 
-```sql
-SELECT * FROM nome_tabela;
-```
-
-Antes de um `UPDATE` ou `DELETE`, é recomendável verificar o registro.
+Foi realizado o seguinte teste:
 
 ```sql
-SELECT *
-FROM cliente
-WHERE id_cliente = 3;
-```
-
-Depois execute a alteração e consulte novamente.
-
----
-
-# 20. Modelo genérico para adaptar
-
-**Não entregue o código abaixo sem adaptação.**
-
-```sql
-USE nome_do_banco;
-
--- INSERTS
-
-INSERT INTO tabela_a (
-    campo_a1,
-    campo_a2
+INSERT INTO FUNCIONARIO (
+    nome_func,
+    cpf_func,
+    data_nascimento,
+    data_admissao,
+    id_cargo,
+    id_setor,
+    id_filial
 )
 VALUES (
-    'Valor 1',
-    'Valor 2'
-);
-
-INSERT INTO tabela_a (
-    campo_a1,
-    campo_a2
-)
-VALUES
-    ('Valor 3', 'Valor 4'),
-    ('Valor 5', 'Valor 6'),
-    ('Valor 7', 'Valor 8');
-
-INSERT INTO tabela_b (
-    id_a,
-    campo_b1
-)
-VALUES (
+    'Teste CPF',
+    '12345678901',
+    '1990-01-01',
+    '2026-09-01',
     1,
-    'Outro valor'
+    1,
+    1
 );
+```
 
--- VERIFICAÇÕES
+### Resultado esperado
 
-SELECT * FROM tabela_a;
-SELECT * FROM tabela_b;
+> O comando deve gerar erro enquanto o funcionário Carlos Henrique, que possui o CPF `12345678901`, ainda estiver cadastrado.
 
--- UPDATES
+### Motivo
 
-UPDATE tabela_a
-SET campo_a1 = 'Valor atualizado'
-WHERE id_a = 1;
+> A restrição `UNIQUE` não permite que dois funcionários possuam o mesmo CPF.
 
-UPDATE tabela_a
-SET campo_a2 = 'Outro valor'
-WHERE id_a = 2;
+### Regra validada
 
-UPDATE tabela_b
-SET campo_b1 = 'Atualizado'
-WHERE id_b = 1;
-
--- DELETES
-
-DELETE FROM tabela_b
-WHERE id_b = 3;
-
-DELETE FROM tabela_a
-WHERE id_a = 5;
+```text
+Um funcionário não pode possuir o mesmo CPF de outro funcionário.
 ```
 
 ---
 
-# 21. Estrutura recomendada do SPRINT3-5.sql
+# 16. Teste da restrição NOT NULL
+
+Foi realizado um teste tentando inserir um produto sem nome.
 
 ```sql
--- ============================================================
--- IDENTIFICAÇÃO
--- ============================================================
-
--- Aluno:
--- Banco:
-
-
--- ============================================================
--- SELECIONAR O BANCO
--- ============================================================
-
-USE nome_do_banco;
-
-
--- ============================================================
--- INSERTS — TABELA 1
--- ============================================================
-
-
--- ============================================================
--- INSERTS — TABELA 2
--- ============================================================
-
-
--- ============================================================
--- INSERTS — TABELA 3
--- ============================================================
-
-
--- ============================================================
--- INSERTS — TABELA 4
--- ============================================================
-
-
--- ============================================================
--- VERIFICAÇÕES
--- ============================================================
-
-
--- ============================================================
--- UPDATES
--- ============================================================
-
-
--- ============================================================
--- DELETES
--- ============================================================
-
-
--- ============================================================
--- VERIFICAÇÃO FINAL
--- ============================================================
-
+INSERT INTO PRODUTO (
+    nome_produto
+)
+VALUES (
+    NULL
+);
 ```
+
+### Resultado esperado
+
+> O comando deve ser rejeitado pelo MySQL.
+
+### Motivo
+
+> O campo `nome_produto` foi definido com `NOT NULL`, portanto não pode receber valor nulo.
 
 ---
 
-# 22. Passo a passo no MySQL Workbench
+# 17. Teste de FOREIGN KEY
 
-## Etapa 1 — Abra o banco
-
-No painel `Schemas`, confirme se o banco e as tabelas da Sprint 2/5 estão disponíveis.
-
-## Etapa 2 — Selecione o banco
+Foi realizado um teste tentando inserir um expediente para um funcionário inexistente.
 
 ```sql
-USE nome_do_banco;
+INSERT INTO EXPEDIENTE (
+    data_batimento,
+    hora_entrada,
+    hora_saida,
+    hora_extra,
+    justificativas,
+    id_func
+)
+VALUES (
+    '2026-09-10',
+    '08:00:00',
+    '17:00:00',
+    0,
+    NULL,
+    999
+);
 ```
 
-## Etapa 3 — Insira dados nas tabelas independentes
+### Resultado esperado
 
-Comece pelas tabelas que não possuem dependências.
+> O comando deve gerar erro de chave estrangeira.
 
-## Etapa 4 — Confira os dados
+### Motivo
 
-```sql
-SELECT * FROM nome_tabela;
-```
-
-## Etapa 5 — Insira dados nas tabelas dependentes
-
-Respeite as `FOREIGN KEY`.
-
-## Etapa 6 — Execute os UPDATEs
-
-Realize pelo menos três alterações coerentes.
-
-## Etapa 7 — Execute os DELETEs
-
-Realize pelo menos duas exclusões seguras.
-
-## Etapa 8 — Faça a verificação final
-
-Confira o conteúdo das tabelas.
-
-## Etapa 9 — Salve o arquivo
-
-```text
-File → Save Script As...
-```
-
-Nome obrigatório:
-
-```text
-SPRINT3-5.sql
-```
+> Não existe um funcionário com `id_func = 999`. Como `EXPEDIENTE.id_func` referencia `FUNCIONARIO.id_func`, o banco impede o cadastro de um expediente para um funcionário inexistente.
 
 ---
 
-# 23. Resumo dos dados
+# 18. Resumo dos testes de integridade
 
-| Tabela | Quantidade aproximada de registros ao final |
-|---|---:|
-|  |  |
-|  |  |
-|  |  |
-|  |  |
-|  |  |
-
----
-
-# 24. Resumo das operações
-
-## INSERT
-
-Quantidade aproximada de registros inseridos:
-
-```text
-
-```
-
-## UPDATE
-
-Quantidade de operações:
-
-```text
-
-```
-
-## DELETE
-
-Quantidade de operações:
-
-```text
-
-```
-
----
-
-# 25. Problemas encontrados
-
-| Problema | Possível causa | Solução aplicada |
+| Teste | Restrição validada | Resultado esperado |
 |---|---|---|
-|  |  |  |
-|  |  |  |
-|  |  |  |
-
-Mensagens que podem aparecer:
-
-```text
-Duplicate entry
-Cannot add or update a child row
-Cannot delete or update a parent row
-Column cannot be null
-Data too long for column
-Unknown column
-```
+| Inserção de CPF repetido | `UNIQUE` | Erro |
+| Inserção de produto com nome `NULL` | `NOT NULL` | Erro |
+| Inserção de expediente com funcionário 999 | `FOREIGN KEY` | Erro |
+| Exclusão de funcionário com expediente relacionado | `FOREIGN KEY` | Erro se o expediente não for removido antes |
 
 ---
 
-# 26. O que deve existir ao final desta Sprint
+# 19. SELECT para validação dos dados
+
+Após as operações foram utilizadas consultas simples para verificar o conteúdo das tabelas.
+
+```sql
+SELECT * FROM FILIAL;
+SELECT * FROM CARGO;
+SELECT * FROM PRODUTO;
+SELECT * FROM SETOR;
+SELECT * FROM FUNCIONARIO;
+SELECT * FROM EXPEDIENTE;
+SELECT * FROM ESTOQUE;
+```
+
+### Objetivo
+
+> Os comandos permitem visualizar os registros existentes depois dos `INSERT`, `UPDATE` e `DELETE`, facilitando a conferência das alterações realizadas.
+
+---
+
+# 20. Ordem correta de execução dos INSERTs
+
+Como existem chaves estrangeiras, a ordem de inserção precisa respeitar os relacionamentos.
+
+A ordem utilizada no script corrigido é:
+
+1. `FILIAL`
+2. `CARGO`
+3. `PRODUTO`
+4. `SETOR`
+5. `FUNCIONARIO`
+6. `EXPEDIENTE`
+7. `ESTOQUE`
+
+### Justificativa
+
+> `FUNCIONARIO` depende de registros existentes em `CARGO`, `SETOR` e `FILIAL`. Já `EXPEDIENTE` depende de `FUNCIONARIO`. A tabela `ESTOQUE` depende de `FILIAL` e `PRODUTO`.
+
+---
+
+# 21. Problemas identificados durante a revisão
+
+| Problema | Causa | Correção |
+|---|---|---|
+| `EXPEDIENTE` era inserido antes de `FUNCIONARIO` | A FK `id_func` exige que o funcionário já exista | O `INSERT INTO FUNCIONARIO` foi colocado antes de `EXPEDIENTE` |
+| `UPDATE ESTOQUE` utilizava `id_estoque` | A tabela utiliza PK composta (`id_filial`, `id_produto`) e não possui `id_estoque` | O `WHERE` foi alterado para `id_filial = 2 AND id_produto = 2` |
+| `DELETE FROM FUNCIONARIO WHERE id_func = 1` poderia ser bloqueado | O funcionário possui registro relacionado em `EXPEDIENTE` | O expediente relacionado deve ser removido antes do funcionário |
+| Teste de CPF repetido poderia deixar de testar `UNIQUE` se executado depois da exclusão | O CPF `12345678901` pertence ao funcionário 1 | O teste de `UNIQUE` deve ser executado antes da exclusão do funcionário 1 |
+
+---
+
+# 22. Cuidados tomados com UPDATE e DELETE
+
+Durante a manipulação dos dados, foi utilizado `WHERE` nos comandos `UPDATE` e `DELETE`.
+
+Isso é importante porque:
+
+```sql
+UPDATE tabela SET campo = valor;
+```
+
+sem `WHERE` alteraria todos os registros da tabela.
+
+Da mesma forma:
+
+```sql
+DELETE FROM tabela;
+```
+
+sem `WHERE` excluiria todos os registros.
+
+No projeto, as condições foram utilizadas para manipular somente os registros escolhidos.
+
+---
+
+# 23. Relação entre as operações e o sistema
+
+As operações realizadas representam situações que podem acontecer no funcionamento da empresa:
+
+- cadastro de uma nova filial;
+- cadastro de cargos e setores;
+- cadastro de funcionários;
+- cadastro dos produtos;
+- registro de estoque;
+- registro de expediente;
+- correção do nome de funcionário;
+- reajuste salarial de um cargo;
+- atualização de quantidade em estoque;
+- exclusão controlada de registros;
+- validação de CPF duplicado;
+- validação de campos obrigatórios;
+- validação dos relacionamentos entre tabelas.
+
+---
+
+# 24. Resultado da Sprint 3/5
+
+Com os comandos desenvolvidos nesta Sprint, o banco passou a possuir registros suficientes para testar sua estrutura.
+
+Também foi possível validar que as restrições definidas na Sprint 2 possuem função prática:
+
+- `UNIQUE` evita CPF duplicado;
+- `NOT NULL` impede produto sem nome;
+- `FOREIGN KEY` impede referências para funcionários inexistentes;
+- as chaves estrangeiras também protegem registros relacionados durante exclusões.
+
+---
+
+# 25. Checklist técnico da Sprint 3/5
+
+- [x] utilizei a estrutura criada na Sprint 2/5;
+- [x] inseri dados em `FILIAL`;
+- [x] inseri dados em `CARGO`;
+- [x] inseri dados em `PRODUTO`;
+- [x] inseri dados em `SETOR`;
+- [x] inseri dados em `FUNCIONARIO`;
+- [x] inseri dados em `EXPEDIENTE`;
+- [x] inseri dados em `ESTOQUE`;
+- [x] utilizei `INSERT`;
+- [x] utilizei `UPDATE`;
+- [x] utilizei `DELETE`;
+- [x] utilizei condições `WHERE` nas alterações e exclusões;
+- [x] testei a restrição `UNIQUE`;
+- [x] testei a restrição `NOT NULL`;
+- [x] testei uma `FOREIGN KEY`;
+- [x] consultei as tabelas utilizando `SELECT`;
+- [x] revisei a ordem de inserção por causa das chaves estrangeiras;
+- [x] registrei os problemas identificados;
+- [x] organizei o script SQL da Sprint;
+- [x] preenchi a documentação da Sprint 3/5.
+
+---
+
+# 26. Arquivos da Sprint
+
+Ao final desta etapa, os arquivos relacionados ao projeto deverão incluir:
 
 ```text
 SPRINT1-5.md
@@ -791,40 +635,13 @@ SPRINT3-5.md
 SPRINT3-5.sql
 ```
 
-Não exclua arquivos das etapas anteriores.
-
 ---
 
-# 27. Checklist da Sprint 3/5
+# 27. Git/GitHub
 
-- [ ] utilizei o banco criado na Sprint 2/5;
-- [ ] utilizei `USE`;
-- [ ] inseri dados coerentes com o projeto;
-- [ ] respeitei a ordem das tabelas;
-- [ ] procurei inserir pelo menos 5 registros nas tabelas principais;
-- [ ] testei restrições de integridade;
-- [ ] executei pelo menos 3 `UPDATE`;
-- [ ] os `UPDATE` possuem condição adequada;
-- [ ] executei pelo menos 2 `DELETE`;
-- [ ] os `DELETE` possuem condição adequada;
-- [ ] verifiquei dependências de `FOREIGN KEY`;
-- [ ] utilizei `SELECT` para conferência;
-- [ ] registrei os problemas encontrados;
-- [ ] salvei o código como `SPRINT3-5.sql`;
-- [ ] preenchi completamente o `SPRINT3-5.md`;
-- [ ] revisei os arquivos antes do commit.
+A Sprint deve continuar sendo desenvolvida na mesma branch individual utilizada anteriormente.
 
----
-
-# 28. Regras de Git/GitHub
-
-A atividade continua **individual**.
-
-Utilize a mesma branch individual das Sprints anteriores.
-
-Não crie uma branch nova.
-
-## Arquivos obrigatórios no commit desta Sprint
+Os arquivos desta etapa devem ser incluídos no commit:
 
 ```text
 SPRINT3-5.md
@@ -837,71 +654,28 @@ Mensagem sugerida:
 Conclui Sprint 3 de 5 - operações DML
 ```
 
----
-
-# 29. Pull Request
-
-**Ainda não abra o Pull Request final.**
-
-O PR será aberto somente após a Sprint 5/5.
-
-```text
-SPRINT1-5.md
-      ↓ commit
-
-SPRINT2-5.md + SPRINT2-5.sql
-      ↓ commit
-
-SPRINT3-5.md + SPRINT3-5.sql
-      ↓ commit
-
-SPRINT4-5.md + SPRINT4-5.sql
-      ↓ commit
-
-SPRINT5-5.md + SPRINT5-5.sql
-      ↓ commit
-
-PULL REQUEST FINAL
-      ↓
-main
-```
+O Pull Request final ainda não deve ser aberto nesta etapa.
 
 ---
 
-# 30. Critério de conclusão
+# 28. Próxima etapa
 
-A Sprint 3/5 será considerada concluída quando o aluno:
+Na Sprint 4/5, os dados inseridos nesta Sprint poderão ser utilizados em consultas SQL mais completas.
 
-1. utilizar o banco criado anteriormente;
-2. popular suas tabelas;
-3. respeitar os relacionamentos existentes;
-4. utilizar corretamente `INSERT`;
-5. realizar pelo menos 3 `UPDATE`;
-6. realizar pelo menos 2 `DELETE`;
-7. preservar a integridade dos dados;
-8. documentar a atividade no `SPRINT3-5.md`;
-9. salvar o código executável em `SPRINT3-5.sql`;
-10. incluir os dois arquivos no commit.
-
----
-
-# Próxima etapa
-
-Na **Sprint 4/5**, os dados criados nesta etapa serão utilizados para consultas SQL.
-
-Serão trabalhados:
+A estrutura e os registros permitirão desenvolver consultas utilizando recursos como:
 
 ```sql
 SELECT
 WHERE
 ORDER BY
-GROUP BY
-HAVING
+JOIN
 COUNT
 SUM
 AVG
 MIN
 MAX
+GROUP BY
+HAVING
 ```
 
-> **Não desenvolva a Sprint 4/5 neste arquivo.**
+> A Sprint 4/5 deverá reutilizar o banco estruturado nas Sprints anteriores.
