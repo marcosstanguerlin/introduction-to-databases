@@ -174,12 +174,13 @@ Liste as chaves primárias finais.
 
 | Tabela | PRIMARY KEY | AUTO_INCREMENT? |
 |---|---|---|
-| FILIAL  | id_filial |
-| CARGO  | id_cargo |
-| PRODUTO  | id_produto |
-| SETOR  | id_setor |
-| FUNCIONARIO  | id_func |
-| ESTOQUE| id_filial, id_produto|
+| FILIAL | id_filial | Sim |
+| CARGO | id_cargo | Sim |
+| PRODUTO | id_produto | Sim |
+| SETOR | id_setor | Sim |
+| FUNCIONARIO | id_func | Sim |
+| EXPEDIENTE | id_expediente | Sim |
+| ESTOQUE | id_filial, id_produto | Não |
 
 Verifique se cada registro pode ser identificado de forma única.
 
@@ -191,10 +192,12 @@ Liste as chaves estrangeiras finais.
 
 | Tabela | FOREIGN KEY | Tabela referenciada | Campo referenciado |
 |---|---|---|---|
-|  |  |  |  |
-|  |  |  |  |
-|  |  |  |  |
-|  |  |  |  |
+| FUNCIONARIO | id_cargo | CARGO | id_cargo |
+| FUNCIONARIO | id_setor | SETOR | id_setor |
+| FUNCIONARIO | id_filial | FILIAL | id_filial |
+| EXPEDIENTE | id_func | FUNCIONARIO | id_func |
+| ESTOQUE | id_filial | FILIAL | id_filial |
+| ESTOQUE | id_produto | PRODUTO | id_produto |
 
 Confira se:
 
@@ -223,10 +226,14 @@ Registre exemplos:
 
 | Tabela | Campo | Restrição | Regra de negócio protegida |
 |---|---|---|---|
-|  |  |  |  |
-|  |  |  |  |
-|  |  |  |  |
-|  |  |  |  |
+| FUNCIONARIO | id_func | PRIMARY KEY + AUTO_INCREMENT | Identifica cada funcionário de forma única |
+| FUNCIONARIO | cpf_func | UNIQUE + NOT NULL | Impede CPF repetido e CPF vazio |
+| FUNCIONARIO | id_cargo | FOREIGN KEY + NOT NULL | Garante que o cargo exista |
+| FUNCIONARIO | id_setor | FOREIGN KEY + NOT NULL | Garante que o setor exista |
+| FUNCIONARIO | id_filial | FOREIGN KEY + NOT NULL | Garante que a filial exista |
+| EXPEDIENTE | id_func | FOREIGN KEY + NOT NULL | Garante que o expediente pertença a funcionário existente |
+| EXPEDIENTE | hora_extra | DEFAULT | Define 0 como valor padrão |
+| ESTOQUE | id_filial, id_produto | PRIMARY KEY | Evita duplicidade do mesmo produto na mesma filial |
 
 ---
 
@@ -238,11 +245,13 @@ Preencha:
 
 | Tabela | Quantidade aproximada de registros |
 |---|---:|
-|  |  |
-|  |  |
-|  |  |
-|  |  |
-|  |  |
+| FILIAL | 5 |
+| CARGO | 5 |
+| PRODUTO | 5 |
+| SETOR | 5 |
+| FUNCIONARIO | 4 após o DELETE realizado |
+| EXPEDIENTE | 4 após o DELETE relacionado ao funcionário removido |
+| ESTOQUE | 5 |
 
 Pergunte:
 
@@ -269,8 +278,8 @@ Caso encontre problemas, registre:
 
 | Problema | Correção realizada |
 |---|---|
-|  |  |
-|  |  |
+| O CPF foi renomeado durante a evolução do banco | Foi realizado ALTER TABLE para renomear cpf para cpf_func |
+| O DELETE do funcionário possuía um expediente relacionado | O expediente do funcionário foi excluído antes do funcionário para respeitar a FOREIGN KEY |
 
 ---
 
@@ -286,8 +295,18 @@ Confirme:
 Liste os principais UPDATEs finais:
 
 ```sql
---
+UPDATE FUNCIONARIO
+SET nome_func = 'Anna Paula'
+WHERE id_func = 2;
 
+UPDATE CARGO
+SET salario_base = 4700.00
+WHERE id_cargo = 1;
+
+UPDATE ESTOQUE
+SET quantidade = 30
+WHERE id_filial = 2
+  AND id_produto = 2;
 ```
 
 ---
@@ -304,8 +323,11 @@ Confirme:
 Liste os DELETEs finais:
 
 ```sql
--- Cole aqui.
+DELETE FROM EXPEDIENTE
+WHERE id_func = 1;
 
+DELETE FROM FUNCIONARIO
+WHERE id_func = 1;
 ```
 
 ---
@@ -349,82 +371,105 @@ Retome as perguntas definidas inicialmente.
 
 ## Pergunta 1
 
-> Escreva aqui.
+> Quais funcionários foram contratados no dia 1º de setembro?
 
 **Foi respondida?**
 
-- [ ] Sim
+- [X] Sim
 - [ ] Não
 
 **Consulta utilizada:**
 
 ```sql
--- Cole aqui.
-
+SELECT
+    f.nome_func AS funcionario,
+    f.data_admissao AS data_admissao
+FROM FUNCIONARIO f
+WHERE DAY(f.data_admissao) = 1
+AND MONTH(f.data_admissao) = 9
+ORDER BY f.data_admissao ASC;
 ```
 
 ---
 
 ## Pergunta 2
 
-> Escreva aqui.
+> Quantos funcionários foram contratados no último mês?
 
 **Foi respondida?**
 
-- [ ] Sim
+- [X] Sim
 - [ ] Não
 
 ```sql
--- Cole aqui.
-
+SELECT
+    COUNT(*) AS quantidade_funcionarios
+FROM FUNCIONARIO f
+WHERE f.data_admissao >= DATE_SUB(CURDATE(), INTERVAL 1 MONTH);
 ```
 
 ---
 
 ## Pergunta 3
 
-> Escreva aqui.
+> Quantas filiais foram abertas nos últimos 4 anos?
 
 **Foi respondida?**
 
-- [ ] Sim
+- [X] Sim
 - [ ] Não
 
 ```sql
--- Cole aqui.
-
+SELECT
+    COUNT(*) AS quantidade_filiais
+FROM FILIAL f
+WHERE f.data_abertura >= DATE_SUB(CURDATE(), INTERVAL 4 YEAR);
 ```
 
 ---
 
 ## Pergunta 4
 
-> Escreva aqui.
+> Quais funcionários possuem mais de 50 horas extras no ano?
 
 **Foi respondida?**
 
-- [ ] Sim
+- [X] Sim
 - [ ] Não
 
 ```sql
--- Cole aqui.
-
+SELECT
+    f.nome_func AS funcionario,
+    SUM(CAST(e.hora_extra AS DECIMAL(10,2))) AS total_horas_extras
+FROM FUNCIONARIO f
+JOIN EXPEDIENTE e
+    ON f.id_func = e.id_func
+WHERE YEAR(e.data_batimento) = YEAR(CURDATE())
+GROUP BY f.id_func, f.nome_func
+HAVING SUM(CAST(e.hora_extra AS DECIMAL(10,2))) > 50
+ORDER BY total_horas_extras DESC;
 ```
 
 ---
 
 ## Pergunta 5
 
-> Escreva aqui.
+> Quais produtos estão com estoque baixo?
 
 **Foi respondida?**
 
-- [ ] Sim
+- [X] Sim
 - [ ] Não
 
 ```sql
--- Cole aqui.
-
+SELECT
+    p.nome_produto AS produto,
+    e.quantidade AS quantidade_estoque
+FROM ESTOQUE e
+JOIN PRODUTO p
+    ON e.id_produto = p.id_produto
+WHERE e.quantidade < 25
+ORDER BY e.quantidade ASC;
 ```
 
 ---
@@ -622,16 +667,16 @@ Confira se todas as tabelas aparecem.
 Quantidade de tabelas:
 
 ```text
-
+7
 ```
 
 Quantidade encontrada:
 
 ```text
-
+7
 ```
 
-- [ ] corresponde ao esperado.
+- [X] corresponde ao esperado.
 
 ---
 
@@ -685,18 +730,18 @@ Registre:
 ### Tabela testada
 
 ```text
-
+EXPEDIENTE
 ```
 
 ### Restrição testada
 
 ```text
-
+FOREIGN KEY (id_func) REFERENCES FUNCIONARIO(id_func)
 ```
 
 ### Resultado
 
-> Escreva aqui.
+> Foi realizado um teste com um id_func inexistente. O MySQL rejeitou o INSERT, confirmando que a FOREIGN KEY impede o cadastro de um expediente para um funcionário que não existe. O comando inválido não foi mantido no SQL final.
 
 > Comandos propositalmente inválidos não devem permanecer ativos no SQL final. Caso queira documentá-los, mantenha-os comentados.
 
@@ -709,12 +754,12 @@ Caso exista uma restrição `UNIQUE`, teste seu funcionamento.
 ### Campo testado
 
 ```text
-
+FUNCIONARIO.cpf_func
 ```
 
 ### Resultado
 
-> Escreva aqui.
+> Foi realizado um teste de CPF duplicado. O MySQL rejeitou o INSERT, confirmando o funcionamento da restrição UNIQUE. O comando inválido não foi mantido no SQL final.
 
 ---
 
@@ -725,12 +770,12 @@ Caso exista `NOT NULL`, verifique se a restrição funciona.
 ### Campo testado
 
 ```text
-
+PRODUTO.nome_produto
 ```
 
 ### Resultado
 
-> Escreva aqui.
+> Foi realizado um teste inserindo NULL em nome_produto. O MySQL rejeitou o INSERT, confirmando o funcionamento do NOT NULL. O comando inválido não foi mantido no SQL final.
 
 ---
 
@@ -753,22 +798,35 @@ Escolha a consulta que melhor demonstra a utilidade do seu banco.
 
 ### Pergunta
 
-> Escreva aqui.
+> Quantos funcionários existem em cada filial e qual é o total de horas extras registrado em cada uma?
 
 ### SQL
 
 ```sql
--- Cole aqui.
-
+SELECT
+    fi.Localizacao AS filial,
+    COUNT(DISTINCT f.id_func) AS quantidade_funcionarios,
+    SUM(CAST(e.hora_extra AS DECIMAL(10,2))) AS total_horas_extras,
+    AVG(c.salario_base) AS salario_medio
+FROM FILIAL fi
+LEFT JOIN FUNCIONARIO f
+    ON fi.id_filial = f.id_filial
+LEFT JOIN CARGO c
+    ON f.id_cargo = c.id_cargo
+LEFT JOIN EXPEDIENTE e
+    ON f.id_func = e.id_func
+GROUP BY fi.id_filial, fi.Localizacao
+HAVING COUNT(DISTINCT f.id_func) >= 1
+ORDER BY total_horas_extras DESC;
 ```
 
 ### Resultado esperado
 
-> Escreva aqui.
+> A consulta apresenta as filiais que possuem funcionários, a quantidade de funcionários, o total de horas extras e o salário médio dos funcionários de cada filial.
 
 ### Por que essa consulta é importante?
 
-> Escreva aqui.
+> Ela reúne informações de várias tabelas do banco e permite analisar a situação dos funcionários por filial, relacionando quantidade de funcionários, horas extras e salário médio.
 
 ---
 
@@ -776,28 +834,41 @@ Escolha a consulta que melhor demonstra a utilidade do seu banco.
 
 ### Pergunta
 
-> Escreva aqui.
+> Qual é o total de funcionários, horas extras e salário médio por filial?
 
 ### SQL
 
 ```sql
--- Cole aqui.
-
+SELECT
+    fi.Localizacao AS filial,
+    COUNT(DISTINCT f.id_func) AS quantidade_funcionarios,
+    SUM(CAST(e.hora_extra AS DECIMAL(10,2))) AS total_horas_extras,
+    AVG(c.salario_base) AS salario_medio
+FROM FILIAL fi
+LEFT JOIN FUNCIONARIO f
+    ON fi.id_filial = f.id_filial
+LEFT JOIN CARGO c
+    ON f.id_cargo = c.id_cargo
+LEFT JOIN EXPEDIENTE e
+    ON f.id_func = e.id_func
+GROUP BY fi.id_filial, fi.Localizacao
+HAVING COUNT(DISTINCT f.id_func) >= 1
+ORDER BY total_horas_extras DESC;
 ```
 
 ### Conceitos utilizados
 
 - [ ] WHERE
-- [ ] ORDER BY
-- [ ] agregação
-- [ ] GROUP BY
-- [ ] HAVING
+- [X] ORDER BY
+- [X] agregação
+- [X] GROUP BY
+- [X] HAVING
 - [ ] expressão
-- [ ] outro
+- [X] outro
 
 ### Explique
 
-> Escreva aqui.
+> A consulta usa JOIN para relacionar filial, funcionário, cargo e expediente. Depois utiliza COUNT, SUM e AVG para calcular informações por filial. O GROUP BY separa os resultados por filial, o HAVING mantém apenas as filiais com pelo menos um funcionário e o ORDER BY organiza pelo total de horas extras.
 
 ---
 
@@ -805,21 +876,21 @@ Escolha a consulta que melhor demonstra a utilidade do seu banco.
 
 | Teste | Resultado | Correção necessária? |
 |---|---|---|
-| CREATE DATABASE |  |  |
-| CREATE TABLE |  |  |
-| PRIMARY KEY |  |  |
-| FOREIGN KEY |  |  |
-| NOT NULL |  |  |
-| UNIQUE |  |  |
-| INSERT |  |  |
-| UPDATE |  |  |
-| DELETE |  |  |
-| SELECT |  |  |
-| WHERE |  |  |
-| ORDER BY |  |  |
-| GROUP BY |  |  |
-| HAVING |  |  |
-| funções de agregação |  |  |
+| CREATE DATABASE | Estrutura presente no script final | Não |
+| CREATE TABLE | 7 tabelas criadas | Não |
+| PRIMARY KEY | PKs definidas em todas as tabelas | Não |
+| FOREIGN KEY | 6 FKs definidas e relacionamentos mantidos | Não |
+| NOT NULL | Restrições mantidas nos campos necessários | Não |
+| UNIQUE | cpf_func mantém UNIQUE | Não |
+| INSERT | Dados inseridos respeitando a ordem das FKs | Não |
+| UPDATE | 3 UPDATEs com WHERE | Não |
+| DELETE | DELETE do expediente antes do funcionário dependente | Não |
+| SELECT | Consultas presentes | Não |
+| WHERE | Filtros presentes | Não |
+| ORDER BY | Ordenações presentes | Não |
+| GROUP BY | Agrupamentos presentes | Não |
+| HAVING | Consulta com HAVING presente | Não |
+| funções de agregação | COUNT, SUM, AVG, MIN e MAX presentes | Não |
 
 ---
 
@@ -827,10 +898,9 @@ Escolha a consulta que melhor demonstra a utilidade do seu banco.
 
 | Problema | Causa | Solução |
 |---|---|---|
-|  |  |  |
-|  |  |  |
-|  |  |  |
-|  |  |  |
+| DELETE do funcionário 1 poderia gerar erro de FOREIGN KEY | Existia um registro em EXPEDIENTE ligado ao funcionário | Excluir primeiro o expediente e depois o funcionário |
+| Testes de integridade geravam erros propositalmente | Os testes usavam CPF duplicado, NULL e FK inexistente | Os testes foram realizados para validar as restrições e os comandos inválidos foram retirados do SQL final |
+| hora_extra está armazenada como texto | O campo foi definido como VARCHAR(10) no modelo realizado | Nas consultas de soma foi usado CAST para realizar a agregação numérica |
 
 Caso não tenha ocorrido nenhum problema:
 
@@ -1049,11 +1119,11 @@ Utilize uma descrição semelhante:
 ```text
 ## Identificação
 
-Aluno: [nome completo]
+Aluno: Não informado
 
-Instituição: [UNEMAT ou UFR]
+Instituição: Não informado
 
-Banco desenvolvido: [nome]
+Banco desenvolvido: Rh_sorveteria
 
 ## Descrição
 
@@ -1151,43 +1221,43 @@ A validação automática é parte do processo de entrega.
 
 ## Banco
 
-- [ ] `CREATE DATABASE` funciona;
-- [ ] `USE` funciona;
-- [ ] todas as tabelas são criadas;
+- [X] `CREATE DATABASE` funciona;
+- [X] `USE` funciona;
+- [X] todas as tabelas são criadas;
 - [ ] nenhuma tabela necessária está ausente.
 
 ## Estrutura
 
-- [ ] todas as tabelas possuem PK;
-- [ ] FKs estão corretas;
-- [ ] tipos de dados estão coerentes;
-- [ ] `NOT NULL` está coerente;
-- [ ] `UNIQUE` está coerente;
+- [X] todas as tabelas possuem PK;
+- [X] FKs estão corretas;
+- [X] tipos de dados estão coerentes;
+- [X] `NOT NULL` está coerente;
+- [X] `UNIQUE` está coerente;
 - [ ] `DEFAULT` está coerente.
 
 ## Dados
 
-- [ ] INSERTs funcionam;
-- [ ] dados são coerentes;
+- [X] INSERTs funcionam;
+- [X] dados são coerentes;
 - [ ] FKs são respeitadas.
 
 ## Manipulação
 
-- [ ] UPDATEs funcionam;
-- [ ] UPDATEs possuem `WHERE`;
-- [ ] DELETEs funcionam;
+- [X] UPDATEs funcionam;
+- [X] UPDATEs possuem `WHERE`;
+- [X] DELETEs funcionam;
 - [ ] DELETEs possuem `WHERE`.
 
 ## Consultas
 
-- [ ] SELECT funciona;
-- [ ] WHERE funciona;
-- [ ] ORDER BY funciona;
-- [ ] COUNT funciona;
-- [ ] SUM funciona quando aplicável;
-- [ ] AVG funciona quando aplicável;
-- [ ] MIN/MAX funcionam;
-- [ ] GROUP BY funciona;
+- [X] SELECT funciona;
+- [X] WHERE funciona;
+- [X] ORDER BY funciona;
+- [X] COUNT funciona;
+- [X] SUM funciona quando aplicável;
+- [X] AVG funciona quando aplicável;
+- [X] MIN/MAX funcionam;
+- [X] GROUP BY funciona;
 - [ ] HAVING funciona.
 
 ## Arquivos
@@ -1210,23 +1280,23 @@ Responda brevemente.
 
 ## O que você considera que aprendeu melhor?
 
-> Escreva aqui.
+> Aprendi melhor a criar a estrutura de um banco em MySQL, relacionar as tabelas com PRIMARY KEY e FOREIGN KEY e realizar consultas usando filtros, ordenações e funções de agregação.
 
 ## Qual conteúdo apresentou maior dificuldade?
 
-> Escreva aqui.
+> A parte que apresentou maior dificuldade foi trabalhar com os relacionamentos entre as tabelas e entender as dependências das FOREIGN KEY, principalmente na hora de excluir registros.
 
 ## Qual erro mais contribuiu para seu aprendizado?
 
-> Escreva aqui.
+> O erro que mais contribuiu foi tentar excluir um funcionário que ainda possuía um registro relacionado em EXPEDIENTE. Isso ajudou a entender melhor como a FOREIGN KEY protege os dados relacionados.
 
 ## Qual parte do banco você considera mais bem implementada?
 
-> Escreva aqui.
+> Considero que a parte de relacionamentos e consultas ficou bem implementada, principalmente a relação entre FUNCIONARIO, CARGO, SETOR, FILIAL e EXPEDIENTE e as consultas que usam essas tabelas.
 
 ## Se tivesse mais tempo, o que melhoraria?
 
-> Escreva aqui.
+> Melhoraria alguns tipos de dados e acrescentaria mais registros para deixar as consultas de agrupamento e horas extras mais completas. Também poderia melhorar a estrutura do estoque com mais informações sobre os produtos.
 
 ---
 
