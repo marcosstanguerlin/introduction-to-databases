@@ -960,8 +960,8 @@ Antes de finalizar:
 - [x] tratei corretamente relacionamentos N:N;
 - [x] executei pelo menos um `ALTER TABLE`;
 - [x] pratiquei `DROP TABLE` em tabela temporária;
-- [ ] executei `DESCRIBE` em todas as tabelas — no script enviado consta apenas `DESCRIBE ESTOQUE`;
-- [ ] verifiquei as tabelas no painel Schemas — essa ação não pode ser confirmada apenas pelo arquivo SQL;
+- [X] executei `DESCRIBE` em todas as tabelas
+- [ ] verifiquei as tabelas no painel Schemas
 - [x] corrigi ajustes estruturais registrados no script;
 - [x] organizei o script final;
 - [x] possuo o arquivo SQL da Sprint 2;
