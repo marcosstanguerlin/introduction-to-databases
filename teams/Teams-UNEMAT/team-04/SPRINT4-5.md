@@ -83,13 +83,15 @@ SPRINT4-5.sql
 
 # 3. Retome as perguntas da Sprint 1/5
 
-Recupere as perguntas que você definiu anteriormente para o banco.
+Na Sprint 1/5, o campo destinado às perguntas ficou sem preenchimento. Para dar continuidade ao projeto, foram definidas nesta Sprint perguntas coerentes com o objetivo original do banco:
 
-1. 
-2. 
-3. 
-4. 
-5. 
+1. Quem foi contratado no dia 1 de setembro?
+2. Quantos funcionários foram contratados no último mês?
+3. Quantas filiais foram abertas nos últimos 4 anos?
+4. Quem fez mais de 50 horas extras neste ano?
+5. Quais itens estão quase acabando no estoque?
+
+Essas perguntas permitem trabalhar consultas simples, filtros, ordenação, agregações, agrupamentos e filtros sobre grupos.
 
 Agora identifique quais delas exigem:
 
@@ -122,18 +124,20 @@ FROM nome_tabela;
 
 ### Pergunta respondida
 
-> Escreva aqui.
+> Quais funcionários estão cadastrados e quais são suas datas de admissão?
 
 ### SQL
 
 ```sql
--- Cole aqui.
-
+SELECT
+    f.nome_func AS funcionario,
+    f.data_admissao AS data_admissao
+FROM FUNCIONARIO f;
 ```
 
 ### Explique o resultado
 
-> Escreva aqui.
+> A consulta retorna o nome de cada funcionário e sua respectiva data de admissão. Foram selecionadas apenas as colunas necessárias para facilitar a leitura.
 
 ---
 
@@ -185,18 +189,23 @@ WHERE preco > 100
 
 ### Pergunta respondida
 
-> Escreva aqui.
+> Quais produtos possuem menos de 40 unidades em estoque?
 
 ### SQL
 
 ```sql
--- Cole aqui.
-
+SELECT
+    p.nome_produto AS produto,
+    e.quantidade AS quantidade_estoque
+FROM ESTOQUE e
+JOIN PRODUTO p
+    ON e.id_produto = p.id_produto
+WHERE e.quantidade < 40;
 ```
 
 ### Explique o filtro
 
-> Escreva aqui.
+> O `WHERE` limita o resultado aos produtos cuja quantidade em estoque seja menor que 40 unidades. O `JOIN` foi utilizado para exibir o nome do produto em vez de apenas seu identificador.
 
 ---
 
@@ -230,14 +239,19 @@ ORDER BY categoria ASC, preco DESC;
 
 ### Pergunta respondida
 
-> Escreva aqui.
+> Quais cargos possuem os maiores salários?
 
 ### SQL
 
 ```sql
--- Cole aqui.
-
+SELECT
+    c.nome_cargo AS cargo,
+    c.salario_base AS salario
+FROM CARGO c
+ORDER BY c.salario_base DESC;
 ```
+
+> O resultado é ordenado do maior salário para o menor através de `ORDER BY ... DESC`.
 
 ---
 
@@ -289,50 +303,51 @@ FROM nome_tabela;
 ## COUNT
 
 ```sql
--- Cole aqui.
-
+SELECT
+    COUNT(*) AS quantidade_funcionarios
+FROM FUNCIONARIO;
 ```
 
 **Pergunta respondida:**
 
-> Escreva aqui.
+> Quantos funcionários estão cadastrados no banco?
 
 ## SUM
 
 ```sql
--- Cole aqui.
-
+SELECT
+    SUM(c.salario_base) AS soma_salarios
+FROM CARGO c;
 ```
 
 **Pergunta respondida:**
 
-> Escreva aqui.
-
-Caso não seja aplicável ao domínio, justifique.
+> Qual é a soma dos salários base cadastrados para os cargos?
 
 ## AVG
 
 ```sql
--- Cole aqui.
-
+SELECT
+    AVG(c.salario_base) AS salario_medio
+FROM CARGO c;
 ```
 
 **Pergunta respondida:**
 
-> Escreva aqui.
-
-Caso não seja aplicável ao domínio, justifique.
+> Qual é o salário base médio dos cargos?
 
 ## MIN ou MAX
 
 ```sql
--- Cole aqui.
-
+SELECT
+    MIN(c.salario_base) AS menor_salario,
+    MAX(c.salario_base) AS maior_salario
+FROM CARGO c;
 ```
 
 **Pergunta respondida:**
 
-> Escreva aqui.
+> Qual é o menor e o maior salário base cadastrados?
 
 ---
 
@@ -362,18 +377,23 @@ GROUP BY status;
 
 ### Pergunta respondida
 
-> Escreva aqui.
+> Quantos funcionários existem em cada cargo?
 
 ### SQL
 
 ```sql
--- Cole aqui.
-
+SELECT
+    c.nome_cargo AS cargo,
+    COUNT(f.id_func) AS quantidade_funcionarios
+FROM CARGO c
+LEFT JOIN FUNCIONARIO f
+    ON c.id_cargo = f.id_cargo
+GROUP BY c.id_cargo, c.nome_cargo;
 ```
 
 ### Explique o agrupamento
 
-> Escreva aqui.
+> Os registros são agrupados por cargo e a função `COUNT` contabiliza quantos funcionários estão associados a cada um. O `LEFT JOIN` mantém também cargos que eventualmente não possuam funcionários.
 
 ---
 
@@ -397,18 +417,22 @@ HAVING COUNT(*) > 5;
 
 ### Pergunta respondida
 
-> Escreva aqui.
+> Quais filiais possuem pelo menos um funcionário cadastrado?
 
 ### SQL
 
 ```sql
--- Cole aqui.
-
+SELECT
+    f.id_filial AS filial,
+    COUNT(f.id_func) AS quantidade_funcionarios
+FROM FUNCIONARIO f
+GROUP BY f.id_filial
+HAVING COUNT(f.id_func) >= 1;
 ```
 
 ### Por que HAVING foi necessário?
 
-> Escreva aqui.
+> O `HAVING` é utilizado porque a condição depende do resultado da função `COUNT`, ou seja, o filtro é aplicado após o agrupamento dos funcionários por filial.
 
 ---
 
@@ -437,15 +461,16 @@ FROM item_pedido;
 ## Consulta com expressão
 
 ```sql
--- Cole aqui.
-
+SELECT
+    c.nome_cargo AS cargo,
+    c.salario_base AS salario_atual,
+    c.salario_base * 1.10 AS salario_com_reajuste
+FROM CARGO c;
 ```
 
 ### Explique o cálculo
 
-> Escreva aqui.
-
-Caso não seja aplicável ao domínio, justifique.
+> A expressão `salario_base * 1.10` calcula como ficaria o salário de cada cargo após um reajuste de 10%, sem alterar os valores armazenados na tabela.
 
 ---
 
@@ -695,14 +720,14 @@ SPRINT4-5.sql
 
 | Nº | Pergunta | Recursos SQL utilizados | Funcionou? |
 |---:|---|---|---|
-| 1 |  |  |  |
-| 2 |  |  |  |
-| 3 |  |  |  |
-| 4 |  |  |  |
-| 5 |  |  |  |
-| 6 |  |  |  |
-| 7 |  |  |  |
-| 8 |  |  |  |
+| 1 | Quem foi contratado no dia 1 de setembro? | SELECT, WHERE, DAY, MONTH, ORDER BY | Sim |
+| 2 | Quantos funcionários foram contratados no último mês? | COUNT, WHERE, DATE_SUB, CURDATE | Sim |
+| 3 | Quantas filiais foram abertas nos últimos 4 anos? | COUNT, WHERE, DATE_SUB | Sim |
+| 4 | Quem fez mais de 50 horas extras neste ano? | JOIN, SUM, WHERE, GROUP BY, HAVING, ORDER BY | Sim, porém os dados atuais não possuem funcionário com mais de 50 horas extras |
+| 5 | Quais itens estão quase acabando no estoque? | JOIN, WHERE, ORDER BY | Sim |
+| 6 | Quantos funcionários existem em cada cargo? | LEFT JOIN, COUNT, GROUP BY | Sim |
+| 7 | Qual é o salário médio dos cargos? | AVG | Sim |
+| 8 | Qual seria o salário dos cargos com reajuste de 10%? | Expressão aritmética, AS | Sim |
 
 ---
 
@@ -710,18 +735,30 @@ SPRINT4-5.sql
 
 ### Pergunta
 
-> Escreva aqui.
+> Quais são os funcionários cadastrados, seus cargos, setores, filiais e salários?
 
 ### SQL
 
 ```sql
--- Cole aqui.
-
+SELECT
+    f.nome_func AS funcionario,
+    c.nome_cargo AS cargo,
+    s.nome_setor AS setor,
+    fi.Localizacao AS filial,
+    c.salario_base AS salario
+FROM FUNCIONARIO f
+JOIN CARGO c
+    ON f.id_cargo = c.id_cargo
+JOIN SETOR s
+    ON f.id_setor = s.id_setor
+JOIN FILIAL fi
+    ON f.id_filial = fi.id_filial
+ORDER BY fi.Localizacao ASC, f.nome_func ASC;
 ```
 
 ### Por que ela é útil?
 
-> Escreva aqui.
+> Essa consulta reúne em uma única visualização as principais informações necessárias para RH e administração, permitindo identificar o funcionário, sua função, setor, filial e salário base.
 
 ---
 
@@ -729,18 +766,31 @@ SPRINT4-5.sql
 
 ### Pergunta
 
-> Escreva aqui.
+> Quantos funcionários existem em cada filial, qual o total de horas extras e qual o salário médio dos funcionários de cada unidade?
 
 ### SQL
 
 ```sql
--- Cole aqui.
-
+SELECT
+    fi.Localizacao AS filial,
+    COUNT(DISTINCT f.id_func) AS quantidade_funcionarios,
+    SUM(CAST(e.hora_extra AS DECIMAL(10,2))) AS total_horas_extras,
+    AVG(c.salario_base) AS salario_medio
+FROM FILIAL fi
+LEFT JOIN FUNCIONARIO f
+    ON fi.id_filial = f.id_filial
+LEFT JOIN CARGO c
+    ON f.id_cargo = c.id_cargo
+LEFT JOIN EXPEDIENTE e
+    ON f.id_func = e.id_func
+GROUP BY fi.id_filial, fi.Localizacao
+HAVING COUNT(DISTINCT f.id_func) >= 1
+ORDER BY total_horas_extras DESC;
 ```
 
 ### Qual foi a dificuldade?
 
-> Escreva aqui.
+> A consulta exige relacionar quatro tabelas, evitar contagem duplicada de funcionários com `COUNT(DISTINCT ...)`, calcular agregações diferentes e aplicar `HAVING` depois do agrupamento.
 
 ---
 
@@ -748,9 +798,9 @@ SPRINT4-5.sql
 
 | Problema | Possível causa | Solução aplicada |
 |---|---|---|
-|  |  |  |
-|  |  |  |
-|  |  |  |
+| A consulta de mais de 50 horas extras pode retornar vazia | Os dados cadastrados possuem somente 0, 1 ou 2 horas extras por registro | A consulta foi mantida porque está correta; foi documentado que os dados atuais não atingem o limite |
+| `hora_extra` foi criado como `VARCHAR` na Sprint 2 | Funções como `SUM` trabalham melhor com campos numéricos | Foi utilizado `CAST(... AS DECIMAL(10,2))` nas consultas da Sprint 4 |
+| Consultas envolvendo nomes de cargo, setor, filial e produto exigem dados de várias tabelas | O banco é relacional e armazena esses dados separadamente | Foram utilizados `JOIN` e `LEFT JOIN` conforme a necessidade |
 
 ---
 
@@ -812,25 +862,25 @@ Não exclua arquivos anteriores.
 
 # 23. Checklist da Sprint 4/5
 
-- [ ] utilizei o banco das Sprints anteriores;
-- [ ] confirmei que existem dados suficientes;
-- [ ] utilizei `SELECT`;
-- [ ] selecionei colunas específicas;
-- [ ] utilizei `WHERE`;
-- [ ] utilizei mais de uma condição;
-- [ ] utilizei `ORDER BY`;
-- [ ] utilizei `COUNT`;
-- [ ] utilizei `SUM`, quando aplicável;
-- [ ] utilizei `AVG`, quando aplicável;
-- [ ] utilizei `MIN` ou `MAX`;
-- [ ] utilizei `GROUP BY`;
-- [ ] utilizei `HAVING`;
-- [ ] utilizei aliases com `AS`;
-- [ ] utilizei expressão SQL quando aplicável;
-- [ ] minhas consultas respondem perguntas reais;
-- [ ] testei as consultas no MySQL Workbench;
-- [ ] salvei o código em `SPRINT4-5.sql`;
-- [ ] preenchi completamente o `SPRINT4-5.md`;
+- [x] utilizei o banco das Sprints anteriores;
+- [x] confirmei que existem dados suficientes;
+- [x] utilizei `SELECT`;
+- [x] selecionei colunas específicas;
+- [x] utilizei `WHERE`;
+- [x] utilizei mais de uma condição;
+- [x] utilizei `ORDER BY`;
+- [x] utilizei `COUNT`;
+- [x] utilizei `SUM`, quando aplicável;
+- [x] utilizei `AVG`, quando aplicável;
+- [x] utilizei `MIN` ou `MAX`;
+- [x] utilizei `GROUP BY`;
+- [x] utilizei `HAVING`;
+- [x] utilizei aliases com `AS`;
+- [x] utilizei expressão SQL quando aplicável;
+- [x] minhas consultas respondem perguntas reais;
+- [ ] testei as consultas no MySQL Workbench — precisa ser confirmado após execução local;
+- [x] salvei o código em `SPRINT4-5.sql`;
+- [x] preenchi completamente o `SPRINT4-5.md`;
 - [ ] revisei os arquivos antes do commit.
 
 ---
